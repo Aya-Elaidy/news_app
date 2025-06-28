@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/colors_manager.dart';
 import 'package:news_app/models/articles_response/Article.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ArticleItem extends StatelessWidget {
   const ArticleItem({super.key, required this.article});
@@ -85,13 +86,23 @@ showModalBottomSheet(
         ),
 
 
-            onPressed: (){}, child:
+            onPressed: (){
+          _lunchUrl(article.url??'');
+            }, child:
         Text('View Full Article'))
 
       ],
     ),
   );
 });  }
+
+  void _lunchUrl(String url) async{
+    Uri uri=Uri.parse(url);
+    if(await canLaunchUrl(uri)){
+     await launchUrl(uri,mode:LaunchMode.inAppWebView);
+
+    }
+  }
 }
 
 
