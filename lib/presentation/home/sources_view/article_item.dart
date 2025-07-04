@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news_app/core/colors_manager.dart';
 import 'package:news_app/models/articles_response/Article.dart';
+import 'package:news_app/providers/config_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArticleItem extends StatelessWidget {
   const ArticleItem({super.key, required this.article});
@@ -12,6 +15,8 @@ class ArticleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ConfigProvider>(context).isDark;
+
     return InkWell(
       onTap: (){
         showAtricleDetails(article,context);
@@ -19,8 +24,9 @@ class ArticleItem extends StatelessWidget {
       child: Container(
         padding: REdgeInsets.all(8),
         decoration: BoxDecoration(
+          color: isDark?ColorsManager.black17:Colors.white,
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(width: 1.w, color: ColorsManager.white)
+            border: Border.all(width: 1.w, color: isDark? ColorsManager.white:ColorsManager.black17)
         ),
         child: Column(children: [
           //Image.network(article.urlToImage ?? ""),
@@ -57,8 +63,11 @@ showModalBottomSheet(
     ),
     context: context,
     builder:(context){
-  return Container(
-    decoration: BoxDecoration(color: Colors.white,
+      final isDark = Provider.of<ConfigProvider>(context).isDark;
+
+      return Container(
+
+  decoration: BoxDecoration(color:isDark? Colors.white:ColorsManager.black17,
     borderRadius: BorderRadius.circular(16.r)),
     padding: EdgeInsets.all(16),
     margin: EdgeInsets.all(8),
@@ -76,10 +85,10 @@ showModalBottomSheet(
             errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
-        Text(article.description??''),
+        Text(article.description??'',style: TextStyle(color: isDark?Colors.black:Colors.white),),
         ElevatedButton(style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
+          backgroundColor: isDark?Colors.black:Colors.white,
+          foregroundColor: isDark?Colors.white:Colors.black,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
           textStyle:Theme.of(context).textTheme.labelMedium!.copyWith(fontSize: 16.sp)
 
@@ -89,7 +98,7 @@ showModalBottomSheet(
             onPressed: (){
           _lunchUrl(article.url??'');
             }, child:
-        Text('View Full Article'))
+       Text(AppLocalizations.of(context)!.view_full_article))
 
       ],
     ),
