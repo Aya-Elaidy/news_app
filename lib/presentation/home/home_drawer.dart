@@ -3,14 +3,30 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_app/core/colors_manager.dart';
 import 'package:news_app/core/extensions/context_ex.dart';
+import 'package:news_app/providers/config_provider.dart';
 import 'package:news_app/providers/home_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:news_app/providers/home_provider.dart';
 
-class HomeDrawer extends StatelessWidget {
-  const HomeDrawer({super.key});
+
+
+class HomeDrawer extends StatefulWidget {
+ const  HomeDrawer({super.key});
+
+
+  @override
+  State<HomeDrawer> createState() => _HomeDrawerState();
+}
+
+class _HomeDrawerState extends State<HomeDrawer> {
+  late ConfigProvider configProvider;
 
   @override
   Widget build(BuildContext context) {
+    configProvider = Provider.of<ConfigProvider>(context);
+
+
     var homeProvider = Provider.of<HomeProvider>(context);
     return Drawer(
       width: context.width * 0.7,
@@ -39,7 +55,7 @@ class HomeDrawer extends StatelessWidget {
                 InkWell(
                   onTap: (){
                     /// return to categories
-                  homeProvider.changeHomeViewToCategories();
+                  homeProvider.changeHomeViewToCategories(context);
                   Navigator.pop(context);
                   },
                   child: Row(
@@ -47,7 +63,7 @@ class HomeDrawer extends StatelessWidget {
                       Icon(Icons.home_filled, color: ColorsManager.white),
                       SizedBox(width: 8.w),
                       Text(
-                        "Go to home",
+                        AppLocalizations.of(context)!.go_to_home,
                         style: GoogleFonts.inter(
                           fontSize: 20.sp,
                           color: ColorsManager.white,
@@ -66,16 +82,22 @@ class HomeDrawer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Dark",
+                     AppLocalizations.of(context)!.dark,
                       style: GoogleFonts.inter(
                         fontSize: 20.sp,
                         color: ColorsManager.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Switch(value: true, onChanged: (value) {
+                    Switch(
+                      value: configProvider.isDark,
+                      onChanged: (value) {
+                        configProvider.changeAppTheme(
+                          value ? ThemeMode.dark : ThemeMode.light,
+                        );
+                      },
+                    )
 
-                    },)
 
                   ],
                 ),
@@ -86,16 +108,20 @@ class HomeDrawer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "English",
+                     "English",
                       style: GoogleFonts.inter(
                         fontSize: 20.sp,
                         color: ColorsManager.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Switch(value: true, onChanged: (value) {
+                    Switch(
+                      value: configProvider.isEnglish,
+                      onChanged: (value) {
+                        configProvider.changeAppLang(value ? "en" : "ar");
+                      },
+                    )
 
-                    },)
 
                   ],
                 ),
@@ -106,4 +132,5 @@ class HomeDrawer extends StatelessWidget {
       ),
     );
   }
+
 }

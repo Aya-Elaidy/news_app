@@ -16,4 +16,7 @@ class AssetsManager {
   static const String scienceDark = "$base/science_dark.png";
   static const String generalDark = "$base/general_dark.png";
   static const String articleImage = "$base/article_image.png";
+  static const String logo = "$base/logo.png";
+  static const String branding = "$base/branding.png";
+
 }
